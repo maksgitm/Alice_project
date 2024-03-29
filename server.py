@@ -7,9 +7,8 @@ app = Flask(__name__)
 
 logging.basicConfig(level=logging.INFO)
 
-
 cities = {
-    'москва': ['9d2429b8-da22-48e8-b769-6591af8785b9'],
+    'москва': ['1533899/e58613f5f4fe98879467'],
     'нью-йорк': ['213044/79e577fe94029bad7196'],
     'париж': ['997614/b879c307a9d7d182cf93']
 }
@@ -51,24 +50,18 @@ def handle_dialog(res, req):
             res['response'][
                 'text'] = 'Приятно познакомиться, ' \
                           + first_name.title() \
-                          + '. Я - Алиса. Какой город хочешь увидеть?'
-            res['response']['buttons'] = [
-                {
-                    'title': city.title(),
-                    'hide': True
-                } for city in cities
-            ]
-    else:
-        city = get_city(req)
-        if city in cities:
+                          + '. Я - Алиса. Угадай город!'
             res['response']['card'] = {}
             res['response']['card']['type'] = 'BigImage'
-            res['response']['card']['title'] = 'Этот город я знаю.'
-            res['response']['card']['image_id'] = random.choice(cities[city])
+            res['response']['card']['image_id'] = cities['москва']
             res['response']['text'] = 'Я угадал!'
-        else:
-            res['response']['text'] = \
-                'Первый раз слышу об этом городе. Попробуй еще разок!'
+            city = get_city(req)
+            if city.capitalize() == 'Москва':
+                res['response']['card']['title'] = 'Ты угадал!'
+
+    else:
+        res['response']['text'] = \
+            'Первый раз слышу об этом городе. Попробуй еще разок!'
 
 
 def get_city(req):
